@@ -551,29 +551,10 @@ dcc.Markdown('''
 
 ###### Demonstrates margin disparity and product buckets. ######
 
-
-The default view of the following interactive charts show that of all
-possible combinations of thicknesses, widths, base types, treatments, colors,
-polymers and product groups and families, **53 were statistically influential
-on EBITDA.** Ex: Selecting all products that are described by the 10 most positively
-influential of those descriptors accounts for 47% of EBITDA for 2019 and 16%
-of the production volume i.e. a significant production effort is spent on
-products that do not give a positive contribution to EBITDA. **All 53 descriptors
-are made available here.**
-
-------
-
-* Descriptors can be selected from eight categories:
-    * thickness, width, base type, treatment, color, polymer, product family & group
-* Descriptors are sorted by either best (describe high EBITDA products) or
-worst (describe low EBITDA products)
-* The range bar updates what descriptors are shown in the violin plot and EBITDA
-by Product Family Plot as well as what is calculated in EBITDA, unique products, and volume displays
-
-------
-
-A violin plot of EBITDA values is constructed of each descriptor
-selected by the range bar. A violin plot is a method of plotting
+This analysis starts with finding key product descriptors that affect EBITDA
+ using a priopriatary statistical test. These can be selected by the range bar in the side panel, which
+can be sorted by either high or low effects on EBITDA.
+ A violin plot of EBITDA values is constructed of each descriptor which is a method of plotting
 distributions. It is similar to a box plot, with the addition of a rotated
 kernel density (kde) plot on each side. **The benefit of the kde is to visualize
 the density of the data without obstructing key outliers** *(ex: 200-400K EBITDA
