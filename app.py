@@ -523,8 +523,8 @@ def calculate_opportunity(quantile=0.9):
 # Describe the layout/ UI of the app
 
 app.layout = html.Div([
-html.H1('Gendorf OpEx Assessment'),
-html.H2('Data Storyboard'),
+html.H1('Caravel Assessment'),
+html.H2('company name'),
 html.Br(),
 html.H3(["Product Margin Optimization"]),
 html.Div([
