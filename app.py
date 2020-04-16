@@ -60,10 +60,15 @@ weight_match = pd.read_csv('data/weight_match.csv')
 
 def bubble_chart_kpi(x='EBITDA per Hr Rank', y='Adjusted EBITDA', color='Line',
                       size='Net Sales Quantity in KG'):
-    lowx = weight_match.groupby(color)[x].mean().sort_values().index[0]
-    highx = weight_match.groupby(color)[x].mean().sort_values().index[-1]
+    if x == 'EBITDA per Hr Rank':
+        lowx = weight_match.groupby(color)[x].mean().sort_values().index[-1]
+        highx = weight_match.groupby(color)[x].mean().sort_values().index[0]
+    else:
+        lowx = weight_match.groupby(color)[x].mean().sort_values().index[0]
+        highx = weight_match.groupby(color)[x].mean().sort_values().index[-1]
     lowy = weight_match.groupby(color)[y].mean().sort_values().index[0]
     highy = weight_match.groupby(color)[y].mean().sort_values().index[-1]
+
     return "top {} {}: {}".format(y, color, highy), \
             "top {} {}: {}".format(x, color, highx), \
             "bottom {} {}: {}".format(y, color, lowy), \
@@ -553,7 +558,7 @@ products around margin levers.
 '''),
 ], className='pretty_container',
    style={"background-color": "#ffffff",
-          "maxHeight": "350px"},
+          "maxHeight": "800px"},
     id='explain1a',
 ),
 html.Div([
@@ -590,7 +595,7 @@ each family, respectively).*
 '''),
 ], className='pretty_container',
    style={"background-color": "#ffffff",
-          "maxHeight": "350px"},
+          "maxHeight": "800px"},
    id='explain1b',
 ),
 ], className='row container-display',
@@ -706,7 +711,7 @@ with pricing and other levers.
 '''),
 ], className='pretty_container',
 style={"background-color": "#ffffff",
-       "maxHeight": "300px"},
+       "maxHeight": "500px"},
     id='explain2a',
 ),
 html.Div([
@@ -725,7 +730,7 @@ increasing their Size (production volume)).*
 '''),
 ], className='pretty_container',
    style={"background-color": "#ffffff",
-          "maxHeight": "300px"},
+          "maxHeight": "500px"},
    id='explain2b',
 ),
 ], className='row container-display',
@@ -810,7 +815,7 @@ being be monetized.
 '''),
 ], className='pretty_container',
 style={"background-color": "#ffffff",
-       "maxHeight": "350px"},
+       "maxHeight": "500px"},
     id='explain3a',
 ),
 html.Div([
@@ -836,7 +841,7 @@ Moods Median testing [click here](https://docs.scipy.org/doc/scipy/reference/gen
 '''),
 ], className='pretty_container',
    style={"background-color": "#ffffff",
-          "maxHeight": "350px"},
+          "maxHeight": "500px"},
    id='explain3b',
 ),
 ], className='row container-display',
@@ -861,7 +866,7 @@ with stable yield, uptime, and rate performance relative to the others.
 '''),
 ], className='pretty_container',
 style={"background-color": "#ffffff",
-       "maxHeight": "300px"},
+       "maxHeight": "500px"},
     id='explain4a',
 ),
 html.Div([
@@ -879,7 +884,7 @@ I have done it before, what if I were to more consistently achieve this performa
 '''),
 ], className='pretty_container',
    style={"background-color": "#ffffff",
-          "maxHeight": "300px"},
+          "maxHeight": "500px"},
    id='explain4b',
 ),
 ], className='row container-display',
@@ -1021,7 +1026,7 @@ K40.
 '''),
 ], className='pretty_container',
 style={"background-color": "#ffffff",
-       "maxHeight": "300px"},
+       "maxHeight": "500px"},
     id='explain6a',
 ),
 html.Div([
@@ -1042,7 +1047,7 @@ selected lines.
 '''),
 ], className='pretty_container',
    style={"background-color": "#ffffff",
-          "maxHeight": "300px"},
+          "maxHeight": "500px"},
    id='explain6b',
 ),
 ], className='row container-display',
