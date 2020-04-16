@@ -937,7 +937,7 @@ The bottom chart shows the utilization for all lines in 2019.
                 dcc.Dropdown(id='line-select',
                              options=[{'label': i, 'value': i} for i in \
                                         lines],
-                            value='K40',),
+                            value='K10',),
                      ],  className='mini_container',
                          id='line-box',
                      ),
@@ -947,7 +947,7 @@ The bottom chart shows the utilization for all lines in 2019.
                              options=[{'label': 'Thickness', 'value': 'Thickness Material A'},
                                      {'label': 'Product', 'value': 'Product'},
                                      {'label': 'Shift', 'value': 'Shift'}],
-                            value='Product',),
+                            value='Shift',),
                     ],className='mini_container',
                       id='pareto-box',
                     ),
