@@ -160,6 +160,11 @@ body {
   position: relative;
 }
 
+#bubble-plot-container {
+  flex: 5;
+  position: relative;
+}
+
 #pareto {
   flex: 3;
 }
@@ -181,6 +186,22 @@ body {
 }
 
 #line-box {
+  flex: 1;
+}
+
+#bubble-highy-container {
+  flex: 1;
+}
+
+#bubble-highx-container {
+  flex: 1;
+}
+
+#bubble-lowy-container {
+  flex: 1;
+}
+
+#bubble-lowx-container {
   flex: 1;
 }
 
@@ -206,6 +227,10 @@ body {
 }
 
 #descriptorBlock {
+  flex: 2;
+}
+
+#bubble-controls {
   flex: 2;
 }
 

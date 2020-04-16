@@ -58,6 +58,18 @@ stat_df = pd.read_csv('data/category_stats.csv')
 old_products = df[descriptors].sum(axis=1).unique().shape[0]
 weight_match = pd.read_csv('data/weight_match.csv')
 
+def bubble_chart_kpi(x='EBITDA per Hr Rank', y='Adjusted EBITDA', color='Line',
+                      size='Net Sales Quantity in KG'):
+    lowx = weight_match.groupby(color)[x].mean().sort_values().index[0]
+    highx = weight_match.groupby(color)[x].mean().sort_values().index[-1]
+    lowy = weight_match.groupby(color)[y].mean().sort_values().index[0]
+    highy = weight_match.groupby(color)[y].mean().sort_values().index[-1]
+    return "top {} {}: {}".format(y, color, highy), \
+            "top {} {}: {}".format(x, color, highx), \
+            "bottom {} {}: {}".format(y, color, lowy), \
+            "bottom {} {}: {}".format(x, color, lowx)
+
+
 def make_bubble_chart(x='EBITDA per Hr Rank', y='Adjusted EBITDA', color='Line',
                       size='Net Sales Quantity in KG'):
 
@@ -601,8 +613,6 @@ each family, respectively).*
            id='margin-products',
         ),
     ], className='row container-display',
-        # style={'border-color': '#ED2222',
-        #        'background-color': '#aec7e8'},
     ),
     html.Div([
         html.Div([
@@ -722,39 +732,54 @@ increasing their Size (production volume)).*
 ),
     html.Div([
         html.Div([
-            html.Div([
-                html.P('X-axis'),
-                dcc.Dropdown(id='x-select',
-                             options=[{'label': i, 'value': i} for i in \
-                                        ['Rate', 'Yield', 'EBITDA per Hr Rank',\
-                                         'Adjusted EBITDA', 'Net Sales Quantity in KG']],
-                            value='EBITDA per Hr Rank',),
-                     ],  className='mini_container',
-                         id='x-select-box',
-                     ),
-            html.Div([
-                html.P('Y-axis'),
-                dcc.Dropdown(id='y-select',
-                             options=[{'label': i, 'value': i} for i in \
-                                        ['EBITDA per Hr', 'Adjusted EBITDA',\
-                                         'Net Sales Quantity in KG']],
-                            value='Adjusted EBITDA',),
-                    ],className='mini_container',
-                      id='y-select-box',
-                    ),
-            html.Div([
-                html.P('Color'),
-                dcc.Dropdown(id='color-select',
-                             options=[{'label': i, 'value': i} for i in \
-                                        ['Line', 'Thickness Material A',\
-                                         'Width Material Attri', 'Product Family']],
-                            value='Line',),
-                    ],className='mini_container',
-                      id='color-select-box',
-                    ),
-            ], className='row container-display',
-            ),
-        ],
+            html.H6(id='bubble-highy'),
+        ], className='mini_container',
+           id='bubble-highy-container',
+
+        ),
+        html.Div([
+            html.H6(id='bubble-lowy'),
+        ], className='mini_container',
+           id='bubble-highx-container',
+        ),
+        html.Div([
+            html.H6(id='bubble-highx'),
+        ], className='mini_container',
+           id='bubble-lowy-container',
+        ),
+        html.Div([
+            html.H6(id='bubble-lowx'),
+        ], className='mini_container',
+           id='bubble-lowx-container',
+        ),
+    ], className='row container-display',
+    ),
+html.Div([
+    html.Div([
+
+            html.P('X-axis'),
+            dcc.Dropdown(id='x-select',
+                         options=[{'label': i, 'value': i} for i in \
+                                    ['Rate', 'Yield', 'EBITDA per Hr Rank',\
+                                     'Adjusted EBITDA', 'Net Sales Quantity in KG']],
+                        value='EBITDA per Hr Rank',
+                         style={'bottom-margin': '100px'}),
+            html.P(' '),
+            html.P('Y-axis'),
+            dcc.Dropdown(id='y-select',
+                         options=[{'label': i, 'value': i} for i in \
+                                    ['EBITDA per Hr', 'Adjusted EBITDA',\
+                                     'Net Sales Quantity in KG']],
+                        value='Adjusted EBITDA',),
+            html.P(' '),
+            html.P('Color'),
+            dcc.Dropdown(id='color-select',
+                         options=[{'label': i, 'value': i} for i in \
+                                    ['Line', 'Thickness Material A',\
+                                     'Width Material Attri', 'Product Family']],
+                        value='Line',),
+        ], className='mini_container',
+           id='bubble-controls',
         ),
     html.Div([
         dcc.Graph(
@@ -762,8 +787,11 @@ increasing their Size (production volume)).*
             figure=make_bubble_chart(),
         ),
         ], className='mini_container',
-            style={'margin-bottom': '100px'},
+           id='bubble-plot-container',
+            # style={'margin-bottom': '100px'},
         ),
+    ], className='row container-display',
+    ),
 html.H3(["Asset Performance Analysis"]),
 html.H5(["Key Variables"]),
 html.Div([
@@ -789,7 +817,7 @@ html.Div([
 dcc.Markdown('''
 ###### Explores key variables that affect rate, yield, and uptime ######
 
-In this graphic, scores reflect whether or not a group (line or product family) is
+In this graphic, scores reflect whether or not a group (line, shift, or product family) is
 improving rate, yield, or uptime. The statistical test is similar to that
 performed for the product descriptors in the margin analysis. Based on Mood's Median, the
 grand median for all data is computed and then a contingency table is made with
@@ -1151,6 +1179,18 @@ def display_ebit_plot(sort, select, descriptors, switch):
 )
 def display_opportunity(sort, select, descriptors):
     return calculate_margin_opportunity(sort, select, descriptors)
+
+@app.callback(
+    [Output('bubble-highy', 'children'),
+     Output('bubble-highx', 'children'),
+     Output('bubble-lowy', 'children'),
+     Output('bubble-lowx', 'children')],
+    [Input('x-select', 'value'),
+    Input('y-select', 'value'),
+    Input('color-select', 'value')]
+)
+def display_opportunity(x, y, color):
+    return bubble_chart_kpi(x, y, color)
 
 @app.callback(
     Output('metric-plot', 'figure'),
