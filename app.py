@@ -31,15 +31,13 @@ auth = dash_auth.BasicAuth(
 
 server = app.server
 
-opp = pd.read_csv('data/opportunity.csv', index_col=[0,1,2,3])
 opportunity = pd.read_csv('data/days.csv', index_col=[0,1,2,3])
 annual_operating = pd.read_csv('data/annual.csv', index_col=[0,1])
 stats = pd.read_csv('data/scores.csv')
 quantiles = np.arange(50,101,1)
 quantiles = quantiles*.01
 quantiles = np.round(quantiles, decimals=2)
-dataset = opp.sort_index()
-lines = opp.index.get_level_values(1).unique()
+lines = opportunity.index.get_level_values(1).unique()
 asset_metrics = ['Yield', 'Rate', 'Uptime']
 groupby = ['Line', 'Product group']
 oee = pd.read_csv('data/oee.csv')
@@ -553,7 +551,7 @@ dcc.Markdown('''
 
 This analysis starts with finding key product descriptors that affect EBITDA
  using a priopriatary statistical test. These can be selected by the range bar in the side panel, which
-can be sorted by either high or low effects on EBITDA.
+can be sorted by whether they correlate with high or low EBITDA.
  A violin plot of EBITDA values is constructed of each descriptor which is a method of plotting
 distributions. It is similar to a box plot, with the addition of a rotated
 kernel density (kde) plot on each side. **The benefit of the kde is to visualize
@@ -767,6 +765,7 @@ increasing their Size (production volume)).*
             style={'margin-bottom': '100px'},
         ),
 html.H3(["Asset Performance Analysis"]),
+html.H5(["Key Variables"]),
 html.Div([
 html.Div([
 dcc.Markdown('''
@@ -791,7 +790,7 @@ dcc.Markdown('''
 ###### Explores key variables that affect rate, yield, and uptime ######
 
 In this graphic, scores reflect whether or not a group (line or product family) is
-improving uptime, rate, or yield. The statistical test is similar to that
+improving rate, yield, or uptime. The statistical test is similar to that
 performed for the product descriptors in the margin analysis. Based on Mood's Median, the
 grand median for all data is computed and then a contingency table is made with
 the observed variables.
@@ -800,8 +799,8 @@ fraction of observed cases (in x-axis category) above the grand median,
 M2X the fraction of observed cases (in x-axis category) below the grand median,
 M1Y the fraction of observed cases (all other categories) above the grand median, &
 M2Y the fraction of observed cases (all other categories) below the grand median.
-In so doing the x-axis category is compared to the rest of the production data. Take for instance
-the uptime for Dec. Surface/others. While producing these products you are 19x
+In so doing the x-axis category is compared to the rest of the production data. For example,
+ While producing Dec. Surface/others products you are 19x
 more likely to be up than while producing any other product. While all line/product
 families were assessed in this analysis only those with p-value < 0.01 were
 represented here. for more information on
@@ -841,20 +840,11 @@ html.Div([
 dcc.Markdown('''
 ###### Quantifies the opportunity in each line in terms of equivalent days of production
 
-Unutilized capacity should be monetized. Priority for capturing increased asset
-capability should be on Lines E27, K40 -
-This will take a sharper focus on true continuous improvement.
-The organization tracks daily operating parameters, but there does not appear
-to be a concerted effort with a project mentality on thinking in strategical
-improvement terms to capture hidden plant opportunities (increases in yield, uptime and rate).
-
-------
-
 In the following charts, selecting a quantile on the range bar will move the observed
 values for that line/metric/product family so that the grand median is now at the quantile of
 the original distribution. This new distribution is then used to run a hypothetical year
-with the same amount of kg produced. This will result in a shorten amount of days run.
-The additional days gained is the difference of the new amount and the old.
+with the same amount of kg produced. This will result in a shortened amount of run days.
+The days gained is the difference of the new amount and the old.
 This analysis is effectively saying, I know I can perform at this metric because
 I have done it before, what if I were to more consistently achieve this performance level.
 
@@ -955,7 +945,8 @@ The bottom chart shows the utilization for all lines in 2019.
                 html.P('Pareto'),
                 dcc.Dropdown(id='pareto-select',
                              options=[{'label': 'Thickness', 'value': 'Thickness Material A'},
-                                     {'label': 'Product', 'value': 'Product'}],
+                                     {'label': 'Product', 'value': 'Product'},
+                                     {'label': 'Shift', 'value': 'Shift'}],
                             value='Product',),
                     ],className='mini_container',
                       id='pareto-box',
