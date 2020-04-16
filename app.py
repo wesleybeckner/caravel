@@ -69,10 +69,14 @@ def bubble_chart_kpi(x='EBITDA per Hr Rank', y='Adjusted EBITDA', color='Line',
     lowy = weight_match.groupby(color)[y].mean().sort_values().index[0]
     highy = weight_match.groupby(color)[y].mean().sort_values().index[-1]
 
-    return "top {} {}: {}".format(y, color, highy), \
-            "top {} {}: {}".format(x, color, highx), \
-            "bottom {} {}: {}".format(y, color, lowy), \
-            "bottom {} {}: {}".format(x, color, lowx)
+    return "{}".format(highy), \
+            "top {} {}".format(y, color), \
+            "{}".format(highx), \
+            "top {} {}".format(x, color), \
+            "{}".format(lowy), \
+            "bottom {} {}".format(y, color), \
+            "{}".format(lowx), \
+            "bottom {} {}".format(x, color)
 
 
 def make_bubble_chart(x='EBITDA per Hr Rank', y='Adjusted EBITDA', color='Line',
@@ -737,23 +741,23 @@ increasing their Size (production volume)).*
 ),
     html.Div([
         html.Div([
-            html.H6(id='bubble-highy'),
+            html.H6(id='bubble-highy'), html.P(id='bubble-highy-label'),
         ], className='mini_container',
            id='bubble-highy-container',
 
         ),
         html.Div([
-            html.H6(id='bubble-lowy'),
+            html.H6(id='bubble-lowy'), html.P(id='bubble-lowy-label'),
         ], className='mini_container',
            id='bubble-highx-container',
         ),
         html.Div([
-            html.H6(id='bubble-highx'),
+            html.H6(id='bubble-highx'), html.P(id='bubble-highx-label'),
         ], className='mini_container',
            id='bubble-lowy-container',
         ),
         html.Div([
-            html.H6(id='bubble-lowx'),
+            html.H6(id='bubble-lowx'), html.P(id='bubble-lowx-label'),
         ], className='mini_container',
            id='bubble-lowx-container',
         ),
@@ -1187,9 +1191,13 @@ def display_opportunity(sort, select, descriptors):
 
 @app.callback(
     [Output('bubble-highy', 'children'),
+     Output('bubble-highy-label', 'children'),
      Output('bubble-highx', 'children'),
+     Output('bubble-highx-label', 'children'),
      Output('bubble-lowy', 'children'),
-     Output('bubble-lowx', 'children')],
+     Output('bubble-lowy-label', 'children'),
+     Output('bubble-lowx', 'children'),
+     Output('bubble-lowx-label', 'children')],
     [Input('x-select', 'value'),
     Input('y-select', 'value'),
     Input('color-select', 'value')]
