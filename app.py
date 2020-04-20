@@ -344,6 +344,40 @@ def make_product_sunburst(lines=['E27', 'E26']):
      })
     return fig
 
+def compute_distribution_results(line='K40', pareto='Product', toggle='Yield'):
+
+    plot = oee.loc[oee['Line'] == line]
+    plot = plot.sort_values('Thickness Material A')
+    plot['Thickness Material A'] = pd.to_numeric(plot['Thickness Material A'])
+    cut=3
+    plot = plot.groupby(pareto).filter(lambda x : (x[pareto].count()>=cut).any())
+
+    low_mean = plot.groupby(pareto)[toggle].mean().sort_values().reset_index().iloc[0][0]
+    high_mean = plot.groupby(pareto)[toggle].mean().sort_values().reset_index().iloc[-1][0]
+    low_std = plot.groupby(pareto)[toggle].std().sort_values().reset_index().iloc[0][0]
+    high_std = plot.groupby(pareto)[toggle].std().sort_values().reset_index().iloc[-1][0]
+
+    low_mean_val = plot.groupby(pareto)[toggle].mean().sort_values().reset_index().iloc[0][1]
+    high_mean_val = plot.groupby(pareto)[toggle].mean().sort_values().reset_index().iloc[-1][1]
+    low_std_val = plot.groupby(pareto)[toggle].std().sort_values().reset_index().iloc[0][1]
+    high_std_val = plot.groupby(pareto)[toggle].std().sort_values().reset_index().iloc[-1][1]
+
+    if toggle == 'Rate':
+        units = ' kg/hr'
+    elif toggle == 'Yield':
+        units = ''
+    if pareto == 'Thickness Material A':
+        pareto = 'Thickness'
+
+    return "{}".format(high_mean), \
+           "Highest Avg {} {} ({:.1f}{})".format(toggle, pareto, high_mean_val, units), \
+           "{}".format(low_mean), \
+           "Lowest Avg {} {} ({:.1f}{})".format(toggle, pareto, low_mean_val, units), \
+           "{}".format(low_std), \
+           "Highest Variability {} {} ({:.1f}{})".format(toggle, pareto, high_std_val, units), \
+           "{}".format(high_std), \
+           "Lowest Variability {} {} ({:.1f}{})".format(toggle, pareto, low_std_val, units)
+
 def make_metric_plot(line='K40', pareto='Product', marginal='histogram'):
     plot = oee.loc[oee['Line'] == line]
     plot = plot.sort_values('Thickness Material A')
@@ -953,42 +987,74 @@ I have done it before, what if I were to more consistently achieve this performa
             ], className='row container-display',
             style={'margin-bottom': '50px'},
             ),
+html.H5(["Process Variability"]),
+html.Div([
+html.Div([
+dcc.Markdown('''
+###### Key Finding: ######
+Across all lines, shifts A and C are best in class for rate averages. Shift C
+is a top performer for yield averages.
+
+'''),
+], className='pretty_container',
+style={"background-color": "#ffffff",
+       "maxHeight": "500px"},
+    id='explain5a',
+),
 html.Div([
 dcc.Markdown('''
 ###### Identifies where broad distributions are taking place in performance ######
 
-The afformentioned opportunity comes from tightening distributions around rate, yield,
-and uptime. In the default view, K40 is shown to have
-wide distributions around rate and yield. Switching the Line view to E27 will
-show how this contrasts with a much better performing line.
-
-The bottom chart shows the utilization for all lines in 2019.
+Line performance opportunity is calculated from tightening distributions around rate, yield,
+and uptime. In this interactive, variability with respect to different process variables
+is investigated.
 '''),
 ], className='pretty_container',
-   style={"background-color": "#ffffff"},
+   style={"background-color": "#ffffff",
+          "maxHeight": "500px"},
+   id='explain5b',
+),
+], className='row container-display',
+),
+html.Div([
+    html.Div([
+        html.H6(id='metric-highy'), html.P(id='metric-highy-label'),
+    ], className='mini_container',
+       id='metric-highy-container',
+
+    ),
+    html.Div([
+        html.H6(id='metric-lowy'), html.P(id='metric-lowy-label'),
+    ], className='mini_container',
+       id='metric-highx-container',
+    ),
+    html.Div([
+        html.H6(id='metric-highx'), html.P(id='metric-highx-label'),
+    ], className='mini_container',
+       id='metric-lowy-container',
+    ),
+    html.Div([
+        html.H6(id='metric-lowx'), html.P(id='metric-lowx-label'),
+    ], className='mini_container',
+       id='metric-lowx-container',
+    ),
+], className='row container-display',
 ),
     html.Div([
         html.Div([
-            html.Div([
                 html.P('Line'),
                 dcc.Dropdown(id='line-select',
                              options=[{'label': i, 'value': i} for i in \
                                         lines],
                             value='K10',),
-                     ],  className='mini_container',
-                         id='line-box',
-                     ),
-            html.Div([
+                html.P(' '),
                 html.P('Pareto'),
                 dcc.Dropdown(id='pareto-select',
                              options=[{'label': 'Thickness', 'value': 'Thickness Material A'},
                                      {'label': 'Product', 'value': 'Product'},
                                      {'label': 'Shift', 'value': 'Shift'}],
                             value='Shift',),
-                    ],className='mini_container',
-                      id='pareto-box',
-                    ),
-            html.Div([
+                html.P(' '),
                 html.P('Marginal'),
                 dcc.Dropdown(id='marginal-select',
                              options=[{'label': 'None', 'value': 'none'},
@@ -998,20 +1064,26 @@ The bottom chart shows the utilization for all lines in 2019.
                                     {'label': 'Histogram', 'value': 'histogram'}],
                             value='histogram',
                              style={'width': '120px'}),
-                    ],className='mini_container',
-                      id='marginal-box',
-                    ),
-            ], className='row container-display',
+                html.P(' '),
+                html.P('KPI Toggle'),
+                dcc.RadioItems(id='toggle-select',
+                            options=[
+                                {'label': 'Yield', 'value': 'Yield'},
+                                {'label': 'Rate', 'value': 'Rate'},
+                            ],
+                            value='Rate'),
+            ], className='mini_container',
+               id='metric-controls',
             ),
-        ],
-        ),
     html.Div([
         dcc.Graph(
                     id='metric-plot',
                     figure=make_metric_plot()),
             ], className='mini_container',
-                id='metric',
+                id='metric-plot-container',
             ),
+        ], className='row container-display',
+        ),
     html.Div([
         dcc.Graph(
                     id='utilization_plot',
@@ -1020,7 +1092,7 @@ The bottom chart shows the utilization for all lines in 2019.
                 id='util',
                 style={'margin-bottom': '50px'},
             ),
-html.H5("Potential Line Consolidations"),
+html.H5("Line Consolidations"),
 html.Div([
 html.Div([
 dcc.Markdown('''
@@ -1204,6 +1276,22 @@ def display_opportunity(sort, select, descriptors):
 )
 def display_opportunity(x, y, color):
     return bubble_chart_kpi(x, y, color)
+
+@app.callback(
+    [Output('metric-highy', 'children'),
+     Output('metric-highy-label', 'children'),
+     Output('metric-highx', 'children'),
+     Output('metric-highx-label', 'children'),
+     Output('metric-lowy', 'children'),
+     Output('metric-lowy-label', 'children'),
+     Output('metric-lowx', 'children'),
+     Output('metric-lowx-label', 'children')],
+    [Input('line-select', 'value'),
+    Input('pareto-select', 'value'),
+    Input('toggle-select', 'value')]
+)
+def display_opportunity(line, pareto, toggle):
+    return compute_distribution_results(line, pareto, toggle)
 
 @app.callback(
     Output('metric-plot', 'figure'),
