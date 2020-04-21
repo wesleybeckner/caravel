@@ -346,7 +346,10 @@ def make_product_sunburst(lines=['E27', 'E26']):
 
 def compute_distribution_results(line='K40', pareto='Product', toggle='Yield'):
 
-    plot = oee.loc[oee['Line'] == line]
+    if line != 'All Lines':
+        plot = oee.loc[oee['Line'] == line]
+    else:
+        plot = oee
     plot = plot.sort_values('Thickness Material A')
     plot['Thickness Material A'] = pd.to_numeric(plot['Thickness Material A'])
     cut=3
@@ -378,10 +381,15 @@ def compute_distribution_results(line='K40', pareto='Product', toggle='Yield'):
            "{}".format(high_std), \
            "Lowest Variability {} {} ({:.1f}{})".format(toggle, pareto, low_std_val, units)
 
-def make_metric_plot(line='K40', pareto='Product', marginal='histogram'):
-    plot = oee.loc[oee['Line'] == line]
+def make_metric_plot(line='K40', pareto='Product', marginal='histogram',
+                     toggle='Yield'):
+    if line != 'All Lines':
+        plot = oee.loc[oee['Line'] == line]
+    else:
+        plot = oee
     plot = plot.sort_values('Thickness Material A')
     plot['Thickness Material A'] = pd.to_numeric(plot['Thickness Material A'])
+    mean_of_the_std = plot.groupby(pareto)[toggle].std().mean()
     if marginal == 'none':
         fig = px.density_contour(plot, x='Rate', y='Yield',
                      color=pareto)
@@ -392,7 +400,8 @@ def make_metric_plot(line='K40', pareto='Product', marginal='histogram'):
                  "plot_bgcolor": "#F9F9F9",
                  "paper_bgcolor": "#F9F9F9",
                  "height": 750,
-                 "title": "{}, Pareto by {}".format(line, pareto),
+                 "title": "{}, {:.2f} Average {} Variance By {}".\
+                    format(line, mean_of_the_std, toggle, pareto),
      })
     return fig
 
@@ -1045,7 +1054,7 @@ html.Div([
                 html.P('Line'),
                 dcc.Dropdown(id='line-select',
                              options=[{'label': i, 'value': i} for i in \
-                                        lines],
+                                        np.append(lines, 'All Lines')],
                             value='K10',),
                 html.P(' '),
                 html.P('Pareto'),
@@ -1297,10 +1306,11 @@ def display_opportunity(line, pareto, toggle):
     Output('metric-plot', 'figure'),
     [Input('line-select', 'value'),
     Input('pareto-select', 'value'),
-    Input('marginal-select', 'value')]
+    Input('marginal-select', 'value'),
+    Input('toggle-select', 'value')]
 )
-def display_opportunity(line, pareto, marginal):
-    return make_metric_plot(line, pareto, marginal)
+def display_opportunity(line, pareto, marginal, toggle):
+    return make_metric_plot(line, pareto, marginal, toggle)
 
 @app.callback(
     Output('bubble_plot', 'figure'),
