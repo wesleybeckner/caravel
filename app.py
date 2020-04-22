@@ -590,16 +590,16 @@ html.Div([
         html.H1('Caravel Assessment'),
         ], className='nine columns',
         ),
-    html.Div([
-        html.Img(src=app.get_asset_url("kpfilms_logo.jpg")),
-        ], style={'textAlign': 'right'},
-           className='one column',
-        ),
+    # html.Div([
+    #     html.Img(src=app.get_asset_url("kpfilms_logo.jpg")),
+    #     ], style={'textAlign': 'right'},
+    #        className='one column',
+    #     ),
     ], className='row flex-display',
     ),
 html.Div([
     html.Div([
-        html.H2('KP Films, Gendorf'),
+        html.H2('Company Films'),
         ], className='nine columns',
         ),
     ], className='row flex-display',
