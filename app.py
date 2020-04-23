@@ -599,7 +599,7 @@ html.Div([
     ),
 html.Div([
     html.Div([
-        html.H2('Company Films'),
+        html.H2('Company Name'),
         ], className='nine columns',
         ),
     ], className='row flex-display',
