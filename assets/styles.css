@@ -19,7 +19,7 @@ body {
 
 .pretty_container {
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #FFFFFF;
   margin: 10px;
   padding: 15px;
   position: relative;
@@ -95,7 +95,7 @@ body {
 
 .mini_container {
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #FFFFFF;
   margin: 10px;
   padding: 15px;
   position: relative;
@@ -156,7 +156,7 @@ body {
   flex: 3;
 }
 #ebit-family-block {
-  flex: 5;
+  flex: 2;
   position: relative;
 }
 
@@ -248,7 +248,7 @@ body {
 }
 
 #descriptorBlock {
-  flex: 2;
+  flex: 1;
 }
 
 #bubble-controls {

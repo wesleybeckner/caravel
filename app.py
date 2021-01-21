@@ -373,13 +373,13 @@ def compute_distribution_results(line='K40', pareto='Product', toggle='Yield'):
         pareto = 'Thickness'
 
     return "{}".format(high_mean), \
-           "Highest Avg {} {} ({:.1f}{})".format(toggle, pareto, high_mean_val, units), \
+           "Highest Avg {} {} ({:.2f}{})".format(toggle, pareto, high_mean_val, units), \
            "{}".format(low_mean), \
-           "Lowest Avg {} {} ({:.1f}{})".format(toggle, pareto, low_mean_val, units), \
+           "Lowest Avg {} {} ({:.2f}{})".format(toggle, pareto, low_mean_val, units), \
            "{}".format(low_std), \
-           "Highest Variability {} {} ({:.1f}{})".format(toggle, pareto, high_std_val, units), \
+           "Highest Variability {} {} ({:.2f}{})".format(toggle, pareto, high_std_val, units), \
            "{}".format(high_std), \
-           "Lowest Variability {} {} ({:.1f}{})".format(toggle, pareto, low_std_val, units)
+           "Lowest Variability {} {} ({:.2f}{})".format(toggle, pareto, low_std_val, units)
 
 def make_metric_plot(line='K40', pareto='Product', marginal='histogram',
                      toggle='Yield'):
